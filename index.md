@@ -17,7 +17,7 @@ StreetVine is a community-driven events app that helps you:
 
 ## 💡 Need Help?
 If you run into any issues:
-- 📧 Email us at **support@mtdesigns.dev** (or your preferred email)  
+- 📧 Email us at **debuff.design@gmail.com** (or your preferred email)  
 - 🐞 Open an issue on [GitHub](https://github.com/MtD-Designs/streetvine-site/issues)  
 - 📝 Check our FAQ (coming soon!)
 
