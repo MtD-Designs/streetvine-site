@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StreetVine · In Progress</title>
+  <meta name="description" content="What we're building at StreetVine: current work, roadmap, and updates." />
+  <meta property="og:title" content="StreetVine · In Progress" />
+  <meta property="og:description" content="See what's live, what's next, and what we're experimenting with." />
+  <meta name="color-scheme" content="light dark">
+  <style>
+    /* ===== Design tokens (StreetVine theme) ===== */
+    :root{
+      --accent: #ca4721;
+      --accent-600:#b93f1e;
+      --accent-700:#9f371a;
+
+      --bg: #0f1319;          /* deep blue-black */
+      --surface: #151b23;     /* card bg */
+      --elev: #1b222c;        /* elevated bg */
+      --line: #243043;        /* subtle borders */
+      --text: #e8edf6;        /* high contrast text */
+      --muted: #9fb0c9;       /* bluish neutral */
+      --muted-2:#7e91ad;
+
+      --ok:#2ec27e;
+      --warn:#e5a50a;
+      --info:#4aa3ff;
+
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f8fb;
+        --surface:#ffffff;
+        --elev:#f9fbff;
+        --line:#dbe3f2;
+        --text:#0f1320;
+        --muted:#5a6b86;
+        --muted-2:#7d8aa3;
+        --shadow: 0 10px 30px rgba(23,45,85,.08);
+      }
+    }
+
+    /* ===== Base ===== */
+    html,body{height:100%}
+    body{
+      margin:0; background:linear-gradient(180deg,var(--bg), var(--bg) 40%, #0f151d 100%);
+      color:var(--text); font:16px/1.6 var(--font);
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:var(--accent); text-decoration:none}
+    a:hover{ text-decoration:underline }
+    .wrap{max-width:1100px; margin:0 auto; padding:24px}
+    .row{display:flex; gap:16px; flex-wrap:wrap}
+    .card{
+      background:var(--surface); border:1px solid var(--line);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+    }
+
+    /* ===== Top bar ===== */
+    .topbar{position:sticky; top:0; backdrop-filter:saturate(120%) blur(6px);
+      background:color-mix(in srgb, var(--bg) 75%, transparent);
+      border-bottom:1px solid var(--line); z-index:20}
+    .topbar-inner{display:flex; align-items:center; justify-content:space-between; padding:12px 24px}
+    .brand{display:flex; align-items:center; gap:10px}
+    .logo{width:28px; height:28px; border-radius:8px; background:conic-gradient(from 240deg at 50% 50%, var(--accent), #ff7a51, var(--accent));
+      box-shadow:0 6px 18px rgba(202,71,33,.35)}
+    .brand h1{margin:0; font-size:1.05rem; letter-spacing:.2px}
+    .nav a{font-weight:600; padding:8px 10px; border-radius:10px}
+    .nav a:hover{background:var(--elev); text-decoration:none}
+
+    /* ===== Hero ===== */
+    .hero{padding:56px 24px 24px}
+    .hero .title{font-size:clamp(28px, 3.6vw, 44px); line-height:1.1; margin:6px 0 10px}
+    .hero p{color:var(--muted); margin:0 0 16px}
+    .cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      border:1px solid var(--line); border-radius:14px; padding:10px 14px; font-weight:700;
+      background:var(--elev); color:var(--text); text-decoration:none;
+      box-shadow:var(--shadow); transform:translateZ(0); transition:.2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 12px 32px rgba(0,0,0,.28) }
+    .btn.primary{ background:linear-gradient(180deg, var(--accent), var(--accent-600)); border-color:transparent; color:#fff }
+    .btn.primary:hover{ background:linear-gradient(180deg, var(--accent-600), var(--accent-700)) }
+    .pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:var(--elev); border:1px solid var(--line); color:var(--muted)}
+    .pulse{ width:8px; height:8px; border-radius:999px; background:var(--ok); box-shadow:0 0 0 0 rgba(46,194,126,.6); animation:pulse 1.8s infinite }
+    @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(46,194,126,.6)} 70%{box-shadow:0 0 0 12px rgba(46,194,126,0)} 100%{box-shadow:0 0 0 0 rgba(46,194,126,0)} }
+
+    /* ===== Sections ===== */
+    section{padding:28px 24px}
+    h2{font-size:1.35rem; margin:0 0 12px}
+    .sub{color:var(--muted); margin-top:-6px; margin-bottom:16px}
+
+    /* Roadmap columns */
+    .cols{display:grid; gap:16px}
+    @media (min-width: 900px){ .cols{ grid-template-columns: 1.2fr 1fr } }
+
+    /* Cards */
+    .list{display:grid; gap:12px}
+    .item{padding:14px; border-radius:14px; background:var(--elev); border:1px solid var(--line); position:relative; overflow:hidden}
+    .item h3{margin:0 0 6px; font-size:1rem}
+    .item p{margin:0; color:var(--muted)}
+    .tag{display:inline-flex; align-items:center; gap:6px; font-size:.78rem; color:#fff; background:var(--accent); padding:2px 8px; border-radius:999px}
+    .meta{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:var(--surface); border:1px solid var(--line); color:var(--muted-2); font-size:.85rem}
+    .bar{height:8px; background:linear-gradient(90deg, var(--accent), #ff7a51); border-radius:999px; width:var(--w, 40%); box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+
+    /* Changelog */
+    .log{display:grid; gap:10px}
+    .log .entry{padding:12px 14px; background:var(--elev); border:1px solid var(--line); border-radius:12px}
+    .entry strong{color:var(--text)}
+    .entry span{color:var(--muted-2); font-size:.9rem}
+
+    /* Footer / contact */
+    .foot{padding:30px 24px 60px; display:grid; gap:16px; align-items:center}
+    .foot .block{display:flex; gap:16px; align-items:center; flex-wrap:wrap}
+    .contact a.btn{font-weight:800}
+
+    /* Reveal on scroll */
+    .reveal{opacity:0; transform:translateY(8px); transition:opacity .5s ease, transform .5s ease}
+    .reveal.show{opacity:1; transform:none}
+  </style>
+</head>
+<body>
+  <!-- Top navigation -->
+  <div class="topbar">
+    <div class="topbar-inner wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>StreetVine · In Progress</h1>
+      </div>
+      <nav class="nav" aria-label="Primary">
+        <a href="#now">Now</a>
+        <a href="#next">Next</a>
+        <a href="#log">Changelog</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="wrap hero">
+    <span class="pill"><span class="pulse" aria-hidden="true"></span> Live Build · TestFlight</span>
+    <h2 class="title">See what we’re building to make local events <em>unmissable</em>.</h2>
+    <p>StreetVine turns real-world posters into a beautiful, social event feed. Here’s what’s shipped, what’s in flight, and what’s on deck.</p>
+    <div class="cta">
+      <a class="btn primary" href="#now">What’s happening now</a>
+      <a class="btn" href="mailto:support@mtdesigns.dev?subject=StreetVine%20Feedback">Send feedback</a>
+    </div>
+  </header>
+
+  <!-- Roadmap: Now / Next -->
+  <main class="wrap">
+    <section id="now" class="reveal">
+      <h2>🛠 Currently Working On</h2>
+      <p class="sub">Polishing core flows and testing with real people (you!).</p>
+      <div class="cols">
+        <div class="card" style="padding:16px">
+          <div class="list" id="nowList" aria-live="polite"></div>
+        </div>
+        <div class="card" style="padding:16px">
+          <h3 style="margin:0 0 8px">Focus Meter</h3>
+          <p class="sub">Rough sense of where time’s going this sprint.</p>
+          <div class="item"><div class="meta"><span class="chip">UX polish</span><span class="chip">Perf</span></div><div class="bar" style="--w: 72%"></div></div>
+          <div class="item"><div class="meta"><span class="chip">Search/Filter</span></div><div class="bar" style="--w: 55%"></div></div>
+          <div class="item"><div class="meta"><span class="chip">Location</span></div><div class="bar" style="--w: 65%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" class="reveal">
+      <h2>🌿 What’s Next</h2>
+      <p class="sub">Likely order — subject to vibes & tester feedback.</p>
+      <div class="card" style="padding:16px">
+        <div class="list" id="nextList"></div>
+      </div>
+    </section>
+
+    <section id="log" class="reveal">
+      <h2>📦 Changelog</h2>
+      <p class="sub">Highlights from the latest builds.</p>
+      <div class="card" style="padding:16px">
+        <div class="log" id="logList"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="reveal foot">
+      <div class="card block" style="padding:16px">
+        <div style="flex:1; min-width:240px">
+          <h2 style="margin:.2rem 0 .2rem">Have an idea or spot a bug?</h2>
+          <p class="sub" style="margin:0">We read every message. Tell us what would make StreetVine perfect for you.</p>
+        </div>
+        <div class="contact">
+          <a class="btn primary" href="mailto:support@mtdesigns.dev?subject=StreetVine%20Feedback">Email the team</a>
+          <a class="btn" href="https://mtd-designs.github.io/streetvine-support" target="_blank" rel="noopener">Support page</a>
+        </div>
+      </div>
+      <p class="sub" style="text-align:center; margin:8px 0 0">© StreetVine • MtD Designs</p>
+    </section>
+  </main>
+
+  <script>
+    // ---- Lightweight "CMS" data (edit and redeploy) ----
+    const data = {
+      now: [
+        { title: "Search & Tag Filters on Poster Feed",
+          desc: "Bottom sheet filters + live-updating chips. Make discovery snappy.",
+          tags:["Search","Filters","UX"]
+        },
+        { title:"Full-screen Poster Preview (press & hold)",
+          desc:"Zoomable viewer + themed backdrop + snappy close affordance.",
+          tags:["Media","Accessibility","Delight"]
+        },
+        { title:"Pins: Haptic feedback + micro-animations",
+          desc:"Clear success state when saving/removing events.",
+          tags:["Motion","Haptics"]
+        },
+      ],
+      next: [
+        { title:"Friends going preview on cards",
+          desc:"Surfacing friend interest inline to boost social discovery.",
+          tags:["Social"], status:"Planned"
+        },
+        { title:"Smart location radius",
+          desc:"Adaptive radius by city density; user override in Preferences.",
+          tags:["Location"], status:"Designing"
+        },
+        { title:"Event share sheet polish",
+          desc:"Cleaner previews, better copy, and deep links.",
+          tags:["Sharing"], status:"Planned"
+        },
+      ],
+      log: [
+        { when:"Aug 22, 2025", what:"TestFlight build live · iOS signing fixed · Location autocomplete rebuilt (Google Places REST) · Theming + typography pass" },
+        { when:"Aug 20, 2025", what:"Saved Events calendar fixes · Notification popup UX improvements" },
+        { when:"Aug 18, 2025", what:"Interested count + pin logic reliability improvements (Firebase functions)" },
+      ]
+    };
+
+    // ---- Render helpers ----
+    const nowList = document.getElementById('nowList');
+    const nextList = document.getElementById('nextList');
+    const logList = document.getElementById('logList');
+
+    function itemHTML({title, desc, tags=[], status}){
+      return `
+        <div class="item">
+          <div class="row" style="align-items:flex-start">
+            <h3>${title}</h3>
+            ${status ? `<span class="tag" title="status">${status}</span>` : ""}
+          </div>
+          <p>${desc}</p>
+          <div class="meta">
+            ${tags.map(t => `<span class="chip">#${t}</span>`).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    nowList.innerHTML = data.now.map(itemHTML).join("");
+    nextList.innerHTML = data.next.map(itemHTML).join("");
+    logList.innerHTML = data.log.map(e => `
+      <div class="entry">
+        <strong>${e.what}</strong><br>
+        <span>${e.when}</span>
+      </div>
+    `).join("");
+
+    // ---- Reveal on scroll ----
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
+      })
+    }, {threshold: .08});
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // ---- Respect reduced motion ----
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.pulse').forEach(el => el.style.animation = 'none');
+    }
+  </script>
+</body>
+</html>
